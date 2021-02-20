@@ -2,6 +2,10 @@
 node_modules
 /dist
 
+# linters
+.prettierrc
+.eslintrc.js
+
 
 # local env files
 .env.local
