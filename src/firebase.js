@@ -13,6 +13,8 @@ const firebaseConfig = firebase.initializeApp({
   appId: process.env.VUE_APP_FIREBASE_APP_ID
 });
 
+console.log(process.env);
+
 firebase.analytics();
 
 export { firebaseConfig as firebase };
