@@ -3,8 +3,6 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import axios from 'axios';
-import { firebase } from './firebase';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const app = createApp(App)
@@ -13,4 +11,3 @@ const app = createApp(App)
 
 app.config.globalProperties.axios = axios;
 app.mount('#app');
-console.log('firebase', firebase);
