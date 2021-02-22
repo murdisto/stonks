@@ -1,33 +1,20 @@
 <template>
   <div id="nav">
+    <nav-bar />
     <router-link to="/">Home</router-link> |
     <router-link to="/login">Login</router-link> |
     <router-link to="/register">Register</router-link> |
-    <router-link to="/about">I am not a cat</router-link>
+    <router-link to="/dashboard">Dashboard</router-link>
+    <!-- <router-link to="/about">I am not a cat</router-link> -->
   </div>
   <router-view />
 </template>
 
 <script>
-import { onBeforeMount } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { firebase } from "./firebase";
+import NavBar from "./components/NavBar.vue";
 
 export default {
-  setup() {
-    const router = useRouter();
-    const route = useRoute();
-
-    onBeforeMount(() => {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (!user) {
-          router.replace("/login");
-        } else if (route.path === "/login" || route.path === "/register") {
-          router.replace("/");
-        }
-      });
-    });
-  },
+  components: { NavBar },
 };
 </script>
 
@@ -39,6 +26,29 @@ export default {
   text-align: center;
   color: #fff;
   background-color: #2c3e50;
+  display: grid;
+  place-items: center;
+  height: 100%;
+
+  .loader {
+    border: 16px solid #42b983;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    color: red;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 #nav {

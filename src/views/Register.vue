@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>Sign Up</h1>
-    <!-- <div v-if="error" class="error">{{ error.message }}</div> -->
-    <form action="" @submit.prevent="pressed">
+    <div v-if="error" class="error">{{ error.message }}</div>
+    <form action="" @submit.prevent="register">
       <div class="email">
         <input type="email" v-model="email" placeholder="email" />
       </div>
@@ -16,28 +16,53 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import { firebase } from "../firebase";
+
 export default {
-  setup() {
-    const email = ref("");
-    const password = ref("");
-
-    const Register = () => {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email.value, password.value)
-        .then((user) => console.log(user))
-        .catch((err) => alert(err.message));
-    };
-
+  data() {
     return {
-      Register,
-      email,
-      password,
+      email: "",
+      password: "",
+      error: "",
     };
   },
+  methods: {
+    register() {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then((user) => {
+          console.log("user", user);
+          this.$router.replace({ name: "dashboard" });
+        })
+        .catch((error) => (this.error = error));
+    },
+  },
 };
+
+// **************** Vue 3 Composition API ****************
+// import { ref } from "vue";
+// import { firebase } from "../firebase";
+// export default {
+//   setup() {
+//     const email = ref("");
+//     const password = ref("");
+
+//     const Register = () => {
+//       firebase
+//         .auth()
+//         .createUserWithEmailAndPassword(email.value, password.value)
+//         .then((user) => console.log(user))
+//         .catch((err) => alert(err.message));
+//     };
+
+//     return {
+//       Register,
+//       email,
+//       password,
+//     };
+//   },
+// };
 console.log(firebase.auth().currentUser);
 </script>
 

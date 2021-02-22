@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <h1>Login</h1>
-    <form action="" @submit.prevent="Login">
+    <form action="" @submit.prevent="login">
       <div class="email">
         <input type="email" v-model="email" placeholder="email" />
       </div>
@@ -17,28 +17,54 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import { firebase } from "../firebase";
+
 export default {
-  setup() {
-    const email = ref("");
-    const password = ref("");
-
-    const Login = () => {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(email.value, password.value)
-        .then((data) => console.log(data))
-        .catch((err) => alert(err.message));
-    };
-
+  data() {
     return {
-      Login,
-      email,
-      password,
+      email: "",
+      password: "",
+      error: "",
     };
   },
+  methods: {
+    login() {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then((data) => {
+          console.log(data);
+          this.$router.replace({ name: "dashboard" });
+        })
+        .catch((error) => {
+          this.error = error;
+        });
+    },
+  },
 };
+// **************** Vue 3 Composition API ****************
+// import { ref } from "vue";
+// import { firebase } from "../firebase";
+// export default {
+//   setup() {
+//     const email = ref("");
+//     const password = ref("");
+
+//     const Login = () => {
+//       firebase
+//         .auth()
+//         .signInWithEmailAndPassword(email.value, password.value)
+//         .then((data) => console.log(data))
+//         .catch((err) => alert(err.message));
+//     };
+
+//     return {
+//       Login,
+//       email,
+//       password,
+//     };
+//   },
+// };
 </script>
 
 <style lang="scss" scoped>
