@@ -12,20 +12,25 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/Login.vue'), // lazy load
+    component: () => import(/* webpackChunkName: "login" */'../views/Login.vue'), // lazy load
     meta: { requiresGuest: true }
   },
   {
     path: '/register',
     name: 'register',
-    component: () => import('../views/Register.vue'), // lazy load
+    component: () => import(/* webpackChunkName: "register" */'../views/Register.vue'), // lazy load
     meta: { requiresGuest: true }
   },
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: () => import('../views/Dashboard.vue'), // lazy load
+    component: () => import(/* webpackChunkName: "dashboard" */'../views/Dashboard.vue'), // lazy load
     meta: { requiresAuth: true }
+  },
+  {
+    path: "/:catchAll(.*)*",
+    name: 'notFound',
+    component: () => import(/* webpackChunkName: "NotFound" */'../views/NotFound.vue'),
   },
   // {
   //   path: '/about',
