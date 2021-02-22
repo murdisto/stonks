@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
-import { firebase } from '../firebase';
+import { auth } from '../firebase';
 
 const routes = [
   {
@@ -50,7 +50,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!firebase.auth().currentUser) {
+    if (!auth.currentUser) {
       next({
         path: '/login',
         query: {
@@ -61,7 +61,7 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else if (to.matched.some(record => record.meta.requiresGuest)) {
-    if (firebase.auth().currentUser) {
+    if (auth.currentUser) {
       next({
         path: '/dashboard'
       });

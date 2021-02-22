@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { firebase } from "../firebase";
+import { auth } from "../firebase";
 
 export default {
   data() {
@@ -29,8 +29,7 @@ export default {
   },
   methods: {
     login() {
-      firebase
-        .auth()
+      auth
         .signInWithEmailAndPassword(this.email, this.password)
         .then((data) => {
           console.log(data);

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { firebase } from "../firebase";
+import { auth } from "../firebase";
 
 export default {
   data() {
@@ -28,8 +28,7 @@ export default {
   },
   methods: {
     register() {
-      firebase
-        .auth()
+      auth
         .createUserWithEmailAndPassword(this.email, this.password)
         .then((user) => {
           console.log("user", user);
@@ -63,7 +62,7 @@ export default {
 //     };
 //   },
 // };
-console.log(firebase.auth().currentUser);
+console.log(auth.currentUser);
 </script>
 
 <style lang="scss" scoped>

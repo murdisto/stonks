@@ -4,11 +4,11 @@ import router from './router';
 import store from './store';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { firebase } from './firebase';
+import { auth } from './firebase';
 
 let app;
 
-firebase.auth().onAuthStateChanged(user => {
+auth.onAuthStateChanged(user => {
   console.log(user);
   if (!app) {
     app = createApp(App)

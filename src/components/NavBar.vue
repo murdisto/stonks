@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { firebase } from "../firebase";
+import { auth } from "../firebase";
 export default {
   data() {
     return {
@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     userCheck() {
-      firebase.auth().onAuthStateChanged((user) => {
+      auth.onAuthStateChanged((user) => {
         if (user) {
           // User is signed in.
           console.log("signed in");
@@ -36,12 +36,9 @@ export default {
       });
     },
     signOut() {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          this.$router.replace({ name: "login" });
-        });
+      auth.signOut().then(() => {
+        this.$router.replace({ name: "login" });
+      });
     },
   },
 };
