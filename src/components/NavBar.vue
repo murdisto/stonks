@@ -36,9 +36,7 @@ export default {
       });
     },
     signOut() {
-      auth.signOut().then(() => {
-        this.$router.replace({ name: "login" });
-      });
+      this.$store.dispatch("signout");
     },
   },
 };
