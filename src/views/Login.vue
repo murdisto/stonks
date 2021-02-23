@@ -1,5 +1,9 @@
 <template>
   <div class="login">
+    <password-reset
+      v-if="showPasswordReset"
+      @close="togglePasswordReset"
+    ></password-reset>
     <form v-if="showLoginForm" @submit.prevent="login">
       <h1>Login</h1>
       <div class="email">
@@ -18,8 +22,10 @@
       </div>
 
       <input class="btn" type="submit" value="Login" />
-      <br />
-      <a @click="switchForms"> Not signed up? Sign up here! </a>
+      <div class="options">
+        <a @click="switchForms"> Not signed up? Sign up here! </a>
+        <a @click="togglePasswordReset">Forgot Password</a>
+      </div>
     </form>
     <!-- ****************************************************** -->
     <form v-else @submit.prevent="signup">
@@ -57,7 +63,11 @@
 </template>
 
 <script>
+import PasswordReset from "../components/PasswordReset.vue";
 export default {
+  components: {
+    PasswordReset,
+  },
   data() {
     return {
       loginForm: {
@@ -70,11 +80,15 @@ export default {
         password: "",
       },
       showLoginForm: true,
+      showPasswordReset: false,
     };
   },
   methods: {
     switchForms() {
       this.showLoginForm = !this.showLoginForm;
+    },
+    togglePasswordReset() {
+      this.showPasswordReset = !this.showPasswordReset;
     },
     login() {
       this.$store.dispatch("login", {
