@@ -16,12 +16,6 @@ const routes = [
     meta: { requiresGuest: true }
   },
   {
-    path: '/register',
-    name: 'register',
-    component: () => import(/* webpackChunkName: "register" */'../views/Register.vue'), // lazy load
-    meta: { requiresGuest: true }
-  },
-  {
     path: '/dashboard',
     name: 'dashboard',
     component: () => import(/* webpackChunkName: "dashboard" */'../views/Dashboard.vue'), // lazy load

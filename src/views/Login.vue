@@ -1,17 +1,57 @@
 <template>
   <div class="login">
-    <h1>Login</h1>
-    <form action="" @submit.prevent="login">
+    <form v-if="showLoginForm" @submit.prevent="login">
+      <h1>Login</h1>
       <div class="email">
-        <input type="email" v-model.trim="email" placeholder="email" />
+        <input
+          type="email"
+          v-model.trim="loginForm.email"
+          placeholder="email"
+        />
       </div>
       <div class="password">
-        <input type="password" v-model.trim="password" placeholder="password" />
+        <input
+          type="password"
+          v-model.trim="loginForm.password"
+          placeholder="password"
+        />
       </div>
+
       <input class="btn" type="submit" value="Login" />
-      <p>
-        Not signed up? <router-link to="/register">Sign up here!</router-link>
-      </p>
+      <br />
+      <a @click="switchForms"> Not signed up? Sign up here! </a>
+    </form>
+    <!-- ****************************************************** -->
+    <form v-else @submit.prevent="signup">
+      <h1>Sign Up</h1>
+      <div class="name">
+        <input
+          type="text"
+          v-model.trim="signupForm.name"
+          placeholder="Name"
+          id="name"
+        />
+      </div>
+      <div class="email">
+        <input
+          type="email"
+          v-model.trim="signupForm.email"
+          placeholder="email"
+        />
+      </div>
+      <div class="password">
+        <input
+          type="password"
+          v-model.trim="signupForm.password"
+          placeholder="password"
+        />
+      </div>
+      <div class="button">
+        <input class="btn" type="submit" value="Signup" />
+      </div>
+      <div class="options">
+        <a @click="switchForms">Already signed up? Login</a>
+      </div>
     </form>
   </div>
 </template>
@@ -20,46 +60,43 @@
 export default {
   data() {
     return {
-      email: "",
-      password: "",
-      error: "",
+      loginForm: {
+        email: "",
+        password: "",
+      },
+      signupForm: {
+        name: "",
+        email: "",
+        password: "",
+      },
+      showLoginForm: true,
     };
   },
   methods: {
+    switchForms() {
+      this.showLoginForm = !this.showLoginForm;
+    },
     login() {
       this.$store.dispatch("login", {
-        email: this.email,
-        password: this.password,
+        email: this.loginForm.email,
+        password: this.loginForm.password,
+      });
+    },
+    signup() {
+      this.$store.dispatch("signup", {
+        name: this.signupForm.name,
+        email: this.signupForm.email,
+        password: this.signupForm.password,
       });
     },
   },
 };
-// **************** Vue 3 Composition API ****************
-// import { ref } from "vue";
-// import { firebase } from "../firebase";
-// export default {
-//   setup() {
-//     const email = ref("");
-//     const password = ref("");
-
-//     const Login = () => {
-//       firebase
-//         .auth()
-//         .signInWithEmailAndPassword(email.value, password.value)
-//         .then((data) => console.log(data))
-//         .catch((err) => alert(err.message));
-//     };
-
-//     return {
-//       Login,
-//       email,
-//       password,
-//     };
-//   },
-// };
 </script>
 
 <style lang="scss" scoped>
+a {
+  cursor: pointer;
+}
 .error {
   color: red;
   font-size: 18px;

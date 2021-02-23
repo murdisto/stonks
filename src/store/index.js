@@ -16,6 +16,13 @@ export default createStore({
       const { user } = await fb.auth.signInWithEmailAndPassword(form.email, form.password);
       dispatch('fetchUserProfile', user)
     },
+    async signup({ dispatch }, form) {
+      const { user } = await fb.auth.createUserWithEmailAndPassword(form.email, form.password);
+      await fb.usersCollection.doc(user.uid).set({
+        name: form.name
+      })
+      dispatch('fetchUserProfile', user)
+    },
     async fetchUserProfile({ commit }, user) {
       const userProfile = await fb.usersCollection.doc(user.uid).get();
       commit('setUserProfile', userProfile.data());
