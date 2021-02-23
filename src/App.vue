@@ -28,26 +28,31 @@ export default {
   background-color: #2c3e50;
   display: grid;
   place-items: center;
-  height: 100%;
+}
 
-  .loader {
-    border: 16px solid #42b983;
-    border-top: 16px solid #3498db;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
-    color: red;
+.loader-container {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.loader {
+  border: 16px solid #42b983;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  color: red;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
 
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
+  100% {
+    transform: rotate(360deg);
   }
 }
 

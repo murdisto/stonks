@@ -3,10 +3,10 @@
     <h1>Login</h1>
     <form action="" @submit.prevent="login">
       <div class="email">
-        <input type="email" v-model="email" placeholder="email" />
+        <input type="email" v-model.trim="email" placeholder="email" />
       </div>
       <div class="password">
-        <input type="password" v-model="password" placeholder="password" />
+        <input type="password" v-model.trim="password" placeholder="password" />
       </div>
       <input class="btn" type="submit" value="Login" />
       <p>
@@ -17,8 +17,6 @@
 </template>
 
 <script>
-import { auth } from "../firebase";
-
 export default {
   data() {
     return {
@@ -29,15 +27,10 @@ export default {
   },
   methods: {
     login() {
-      auth
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then((data) => {
-          console.log(data);
-          this.$router.replace({ name: "dashboard" });
-        })
-        .catch((error) => {
-          this.error = error;
-        });
+      this.$store.dispatch("login", {
+        email: this.email,
+        password: this.password,
+      });
     },
   },
 };
