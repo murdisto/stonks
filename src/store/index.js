@@ -4,11 +4,15 @@ import router from '../router'
 
 export default createStore({
   state: {
-    userProfile: {}
+    userProfile: {},
+    loadingStatus: false
   },
   mutations: {
     setUserProfile(state, val) {
       state.userProfile = val;
+    },
+    loadingStatus(state, newLoadingStatus) {
+      state.loadingStatus = newLoadingStatus;
     }
   },
   actions: {
@@ -25,14 +29,21 @@ export default createStore({
       dispatch('fetchUserProfile', user)
     },
     async fetchUserProfile({ commit }, user) {
+      commit('loadingStatus', true)
       const userProfile = await fb.usersCollection.doc(user.uid).get();
       commit('setUserProfile', userProfile.data());
+      commit('loadingStatus', false);
       router.push('/dashboard');
     },
     async signout({ commit }) {
       await fb.auth.signOut();
       commit('setUserProfile', {});
       router.push('/login');
+    }
+  },
+  getters: {
+    loadingStatus(state) {
+      return state.loadingStatus;
     }
   },
   modules: {}

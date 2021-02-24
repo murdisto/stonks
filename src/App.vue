@@ -1,20 +1,35 @@
 <template>
-  <div id="nav">
-    <nav-bar />
-    <router-link to="/">Home</router-link> |
-    <router-link to="/login">Login</router-link> |
-    <router-link to="/dashboard">Dashboard</router-link>
-    <!-- <router-link to="/about">I am not a cat</router-link> -->
+  <div v-if="loadingStatus" class="loader-container">
+    <div class="loader"></div>
   </div>
-  <router-view />
+  <div v-else class="app">
+    <div id="nav">
+      <nav-bar />
+      <router-link to="/">Home</router-link> |
+      <router-link to="/login">Login</router-link> |
+      <router-link to="/dashboard">Dashboard</router-link>
+      <!-- <router-link to="/about">I am not a cat</router-link> -->
+    </div>
+
+    <router-view />
+  </div>
 </template>
 
 <script>
 import NavBar from "./components/NavBar.vue";
+import { mapState } from "vuex";
 
 export default {
   components: { NavBar },
+  computed: {
+    ...mapState(["userProfile"]),
+    loadingStatus() {
+      return this.$store.getters.loadingStatus;
+    },
+  },
 };
+
+// console.log(this.userProfile);
 </script>
 
 <style lang="scss">

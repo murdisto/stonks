@@ -7,17 +7,23 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { auth } from './firebase';
 
 let app;
-
+// wrapping the Vue app in firebase's onAuthStateChanged method to maintain the 
+// authentication state of the app
 auth.onAuthStateChanged(user => {
   console.log(user);
   if (!app) {
     app = createApp(App)
-  .use(store)
-  .use(router);
+    .use(store)
+    .use(router);
+    
+    if (user) {
+      store.dispatch('fetchUserProfile', user);
+    }
 
   app.config.globalProperties.axios = axios;
   app.mount('#app');
-      
+  
+    
   }
 })
 
