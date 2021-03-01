@@ -41,6 +41,14 @@ export default createStore({
       const userProfile = await fb.usersCollection.doc(currentUser.uid).get();
       commit('setUserProfile', userProfile.data());
     },
+    async removeFollowedStonk({ commit }, result) { 
+      const { currentUser } = firebase.auth();
+      await fb.usersCollection.doc(currentUser.uid).update({
+        stonks: firebase.firestore.FieldValue.arrayRemove(result)
+      });
+      const userProfile = await fb.usersCollection.doc(currentUser.uid).get();
+      commit('setUserProfile', userProfile.data());
+    },
     async fetchUserProfile({ commit }, user) {
       commit('loadingStatus', true)
       const userProfile = await fb.usersCollection.doc(user.uid).get();

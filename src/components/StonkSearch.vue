@@ -9,7 +9,13 @@
     <div>
       <div v-for="result in results" :key="result.symbol">
         {{ result.name }}
-        <button @click="followStonk(result)">+follow</button>
+        <button
+          v-if="compareStonks(result.symbol)"
+          @click="followStonk(result.symbol)"
+        >
+          +follow
+        </button>
+        <button v-else @click="unfollowStonk(result.symbol)">-unfollow</button>
       </div>
     </div>
   </div>
@@ -17,6 +23,7 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 
 const API_KEY = process.env.VUE_APP_FNP_API_KEY;
 
@@ -26,6 +33,9 @@ export default {
       searchTerm: "",
       results: [],
     };
+  },
+  computed: {
+    ...mapState(["userProfile"]),
   },
   methods: {
     searchStonks() {
@@ -44,9 +54,14 @@ export default {
         })
         .catch((err) => console.error(err));
     },
-    followStonk(result) {
-      let symbol = result.symbol;
+    followStonk(symbol) {
       this.$store.dispatch("addFollowedStonk", symbol);
+    },
+    unfollowStonk(symbol) {
+      this.$store.dispatch("removeFollowedStonk", symbol);
+    },
+    compareStonks(symbol) {
+      return !this.userProfile.stonks.includes(symbol);
     },
   },
 };
