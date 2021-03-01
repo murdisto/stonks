@@ -1,10 +1,15 @@
 import { createStore } from "vuex";
 import * as fb from '../firebase';
+import firebase from 'firebase/app';
 import router from '../router'
 
 export default createStore({
   state: {
-    userProfile: {},
+    userProfile: {
+      email: "",
+      name: "",
+      stonks: []
+    },
     loadingStatus: false
   },
   mutations: {
@@ -27,6 +32,14 @@ export default createStore({
         email: form.email
       })
       dispatch('fetchUserProfile', user)
+    },
+    async addFollowedStonk({ commit }, result) { 
+      const { currentUser } = firebase.auth();
+      await fb.usersCollection.doc(currentUser.uid).update({
+        stonks: firebase.firestore.FieldValue.arrayUnion(result)
+      });
+      const userProfile = await fb.usersCollection.doc(currentUser.uid).get();
+      commit('setUserProfile', userProfile.data());
     },
     async fetchUserProfile({ commit }, user) {
       commit('loadingStatus', true)

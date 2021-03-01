@@ -7,8 +7,9 @@
       </form>
     </div>
     <div>
-      <div v-for="result in results" :key="result.url">
+      <div v-for="result in results" :key="result.symbol">
         {{ result.name }}
+        <button @click="followStonk(result)">+follow</button>
       </div>
     </div>
   </div>
@@ -42,6 +43,10 @@ export default {
           console.log("results: ", this.results);
         })
         .catch((err) => console.error(err));
+    },
+    followStonk(result) {
+      let symbol = result.symbol;
+      this.$store.dispatch("addFollowedStonk", symbol);
     },
   },
 };
