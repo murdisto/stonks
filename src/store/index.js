@@ -54,7 +54,7 @@ export default createStore({
       const userProfile = await fb.usersCollection.doc(user.uid).get();
       commit('setUserProfile', userProfile.data());
       commit('loadingStatus', false);
-      router.push('/dashboard');
+      router.push('/dashboard/stocks');
     },
     async signout({ commit }) {
       await fb.auth.signOut();

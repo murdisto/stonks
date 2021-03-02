@@ -2,16 +2,17 @@
   <div>
     <h1>Dashboard</h1>
     <h2>hello, {{ userProfile.name }}</h2>
-    <stonk-search />
+    <router-link to="/dashboard/search">Search</router-link> |
+    <router-link to="/dashboard/stocks">My Stocks</router-link>
+
+    <router-view />
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import StonkSearch from "../components/StonkSearch.vue";
 
 export default {
-  components: { StonkSearch },
   computed: {
     ...mapState(["userProfile"]),
   },
@@ -20,4 +21,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+a {
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+
+  &.router-link-exact-active {
+    color: #42b983;
+  }
+}
 </style>

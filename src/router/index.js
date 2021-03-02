@@ -19,7 +19,17 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: () => import(/* webpackChunkName: "dashboard" */'../views/Dashboard.vue'), // lazy load
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'search',
+        component: () => import(/* webpackChunkName: "search" */'../components/StonkSearch.vue')
+      },
+      {
+        path: 'stocks',
+        component: () => import(/* webpackChunkName: "stocks" */'../components/MyStonks.vue')
+      }
+    ]
   },
   {
     path: "/:catchAll(.*)*",

@@ -5,19 +5,22 @@
         <input type="text" v-model="searchTerm" placeholder="Search..." />
         <input type="submit" value="Go" :disabled="searchTerm === ''" />
       </form>
-    </div>
-    <div>
-      <div v-for="result in results" :key="result.symbol">
-        {{ result.name }}
-        <button
-          v-if="compareStonks(result.symbol)"
-          @click="followStonk(result.symbol)"
-        >
-          +follow
-        </button>
-        <button v-else @click="unfollowStonk(result.symbol)">-unfollow</button>
+      <div>
+        <div v-for="result in results" :key="result.symbol">
+          {{ result.name }}
+          <button
+            v-if="compareStonks(result.symbol)"
+            @click="followStonk(result.symbol)"
+          >
+            +follow
+          </button>
+          <button v-else @click="unfollowStonk(result.symbol)">
+            -unfollow
+          </button>
+        </div>
       </div>
     </div>
+    <div></div>
   </div>
 </template>
 
@@ -54,6 +57,7 @@ export default {
         })
         .catch((err) => console.error(err));
     },
+
     followStonk(symbol) {
       this.$store.dispatch("addFollowedStonk", symbol);
     },
