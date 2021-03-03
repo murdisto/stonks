@@ -2,7 +2,11 @@
   <div>
     <h1>MYSTONKS</h1>
     <div>
-      <div v-for="(stonk, index) in stonks" :key="index">
+      <div
+        v-for="(stonk, index) in stonks"
+        :key="index"
+        @click="toggleInfo(index)"
+      >
         {{ stonk.name }} {{ stonk.price }}
         <button
           v-if="compareStonks(stonk.symbol)"
@@ -13,6 +17,9 @@
         <button v-else @click="unfollowStonk(stonk.symbol, index)">
           -unfollow
         </button>
+        <div v-if="show.includes(index)">
+          THIS IS SUPPOSED TO BE HIDDEN {{ stonk.price }}
+        </div>
       </div>
     </div>
   </div>
@@ -29,6 +36,7 @@ export default {
     return {
       symbols: [],
       stonks: [],
+      show: [],
     };
   },
   created() {
@@ -58,6 +66,13 @@ export default {
     },
     compareStonks(symbol) {
       return !this.userProfile.stonks.includes(symbol);
+    },
+    toggleInfo(index) {
+      if (this.show.includes(index)) {
+        this.show = this.show.filter((item) => item !== index);
+        return;
+      }
+      this.show.push(index);
     },
   },
 };
