@@ -6,7 +6,11 @@
         <input type="submit" value="Go" :disabled="searchTerm === ''" />
       </form>
       <div>
-        <div v-for="result in results" :key="result.symbol">
+        <div
+          v-for="(result, index) in results"
+          :key="index"
+          @click="toggleInfo(index)"
+        >
           {{ result.name }}
           <button
             v-if="compareStonks(result.symbol)"
@@ -17,6 +21,7 @@
           <button v-else @click="unfollowStonk(result.symbol)">
             -unfollow
           </button>
+          <div v-if="show.includes(index)">THIS IS SUPPOSED TO BE HIDDEN</div>
         </div>
       </div>
     </div>
@@ -35,6 +40,7 @@ export default {
     return {
       searchTerm: "",
       results: [],
+      show: [],
     };
   },
   computed: {
@@ -66,6 +72,13 @@ export default {
     },
     compareStonks(symbol) {
       return !this.userProfile.stonks.includes(symbol);
+    },
+    toggleInfo(index) {
+      if (this.show.includes(index)) {
+        this.show = this.show.filter((item) => item !== index);
+        return;
+      }
+      this.show.push(index);
     },
   },
 };
