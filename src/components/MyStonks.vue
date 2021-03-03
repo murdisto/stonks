@@ -2,7 +2,7 @@
   <div>
     <h1>MYSTONKS</h1>
     <div>
-      <div v-for="stonk in stonks" :key="stonk.symbol">
+      <div v-for="(stonk, index) in stonks" :key="index">
         {{ stonk.name }} {{ stonk.price }}
         <button
           v-if="compareStonks(stonk.symbol)"
