@@ -1,13 +1,14 @@
 <template>
   <div>
     <h1>MYSTONKS</h1>
+
     <div>
       <div
         v-for="(stonk, index) in stonks"
         :key="index"
-        @click="toggleInfo(index)"
+        @click="toggleInfo(index, stonk.symbol)"
       >
-        {{ stonk.name }} {{ stonk.price }}
+        {{ stonk.name }}
         <button
           v-if="compareStonks(stonk.symbol)"
           @click="followStonk(stonk.symbol)"
@@ -19,6 +20,7 @@
         </button>
         <div v-if="show.includes(index)">
           THIS IS SUPPOSED TO BE HIDDEN {{ stonk.price }}
+          <chart :symbol="symbol" />
         </div>
       </div>
     </div>
@@ -28,15 +30,18 @@
 <script>
 import axios from "axios";
 import { mapState } from "vuex";
+import Chart from "./Chart.vue";
 
 const API_KEY = process.env.VUE_APP_FNP_API_KEY;
 
 export default {
+  components: { Chart },
   data() {
     return {
       symbols: [],
       stonks: [],
       show: [],
+      symbol: null,
     };
   },
   created() {
@@ -67,7 +72,9 @@ export default {
     compareStonks(symbol) {
       return !this.userProfile.stonks.includes(symbol);
     },
-    toggleInfo(index) {
+    toggleInfo(index, symbol) {
+      this.symbol = symbol;
+      console.log(this.symbol);
       if (this.show.includes(index)) {
         this.show = this.show.filter((item) => item !== index);
         return;

@@ -11,8 +11,11 @@
     "axios": "^0.21.1",
     "bootstrap": "^5.0.0-beta2",
     "core-js": "^3.6.5",
+    "d3": "^6.5.0",
+    "echarts": "^5.0.2",
     "firebase": "^8.2.8",
     "vue": "^3.0.5",
+    "vue-echarts": "^6.0.0-beta.6",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
