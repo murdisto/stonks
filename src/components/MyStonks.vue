@@ -19,8 +19,8 @@
           -unfollow
         </button>
         <div v-if="show.includes(index)">
-          THIS IS SUPPOSED TO BE HIDDEN {{ stonk.price }}
-          <chart :symbol="symbol" />
+          I am not a cat {{ stonk.price }}
+          <!-- <chart :symbol="symbol" /> -->
         </div>
       </div>
     </div>
@@ -30,12 +30,12 @@
 <script>
 import axios from "axios";
 import { mapState } from "vuex";
-import Chart from "./Chart.vue";
+// import Chart from "./Chart.vue";
 
 const API_KEY = process.env.VUE_APP_FNP_API_KEY;
 
 export default {
-  components: { Chart },
+  // components: { Chart },
   data() {
     return {
       symbols: [],

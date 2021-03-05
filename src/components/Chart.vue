@@ -1,5 +1,7 @@
 <template>
-  <div>HEY THIS IS WORKING {{ staticSymbol }}</div>
+  <div>
+    <h2>I am not a cat</h2>
+  </div>
 </template>
 
 <script>
