@@ -3,24 +3,14 @@
     <div class="loader"></div>
   </div>
   <div v-else class="app">
-    <div id="nav">
-      <nav-bar />
-      <router-link to="/">Home</router-link> |
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/dashboard">Dashboard</router-link>
-      <!-- <router-link to="/about">I am not a cat</router-link> -->
-    </div>
-
     <router-view />
   </div>
 </template>
 
 <script>
-import NavBar from "./components/NavBar.vue";
 import { mapState } from "vuex";
 
 export default {
-  components: { NavBar },
   computed: {
     ...mapState(["userProfile"]),
     loadingStatus() {
@@ -37,11 +27,11 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #fff;
-  background-color: #2c3e50;
-  display: grid;
-  place-items: center;
+  // text-align: center;
+  // color: #fff;
+  // background-color: #2c3e50;
+  // display: grid;
+  // place-items: center;
 }
 
 .loader-container {
@@ -57,7 +47,6 @@ export default {
   width: 120px;
   height: 120px;
   animation: spin 2s linear infinite;
-  color: red;
 }
 
 @keyframes spin {
@@ -67,20 +56,6 @@ export default {
 
   100% {
     transform: rotate(360deg);
-  }
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #fff;
-    text-decoration: none;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
   }
 }
 </style>

@@ -42,5 +42,18 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+nav {
+  padding: 30px;
+
+  a {
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
+}
 </style>
