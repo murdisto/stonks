@@ -2,16 +2,31 @@
   <div class="modal">
     <div class="modal-content">
       <div class="close" @click="$emit('close')">X</div>
-      <h3>Reset Password</h3>
-      <div v-if="!showSuccess">
-        <p>Enter your email and we'll send you a reset link.</p>
-        <form @submit.prevent>
-          <input type="email" v-model.trim="email" placeholder="email" />
-        </form>
-        <p v-if="errorMsg !== ''" class="error">{{ errorMsg }}</p>
-        <button class="button" @click="resetPassword">Reset</button>
+      <div class="login-wrapper">
+        <h3 class="login-title">Reset Password</h3>
+        <div v-if="!showSuccess">
+          <p class="modal-text">
+            Enter your email and we'll send you a reset link.
+          </p>
+          <form @submit.prevent>
+            <div class="form-group mb-4">
+              <input
+                type="email"
+                v-model.trim="email"
+                placeholder="email"
+                class="form-control"
+                id="email"
+              />
+            </div>
+          </form>
+          <p v-if="errorMsg !== ''" class="error">{{ errorMsg }}</p>
+          <button class="btn btn-block login-btn" @click="resetPassword">
+            Reset
+          </button>
+        </div>
+
+        <p v-else class="modal-text">Success! Check your email.</p>
       </div>
-      <p v-else>Success! Check your email.</p>
     </div>
   </div>
 </template>
@@ -52,12 +67,63 @@ export default {
   left: 0;
   background: rgba(#333, 0.5);
 
-  input {
+  .login-wrapper {
     width: 100%;
-    padding: 30px;
-    margin: 0px;
-    font-size: 21px;
-    margin-bottom: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .login-wrapper .form-control {
+    border: none;
+    border-radius: 0;
+    padding: 9px 5px;
+    min-height: 40px;
+    font-size: 18px;
+    font-weight: normal;
+    margin-bottom: 10px;
+  }
+
+  .login-wrapper .form-control::-webkit-input-placeholder {
+    color: #b0adad;
+  }
+  .login-wrapper .form-control::-moz-placeholder {
+    color: #b0adad;
+  }
+  .login-wrapper .form-control:-ms-input-placeholder {
+    color: #b0adad;
+  }
+  .login-wrapper .form-control::-ms-input-placeholder {
+    color: #b0adad;
+  }
+  .login-wrapper .form-control::placeholder {
+    color: #b0adad;
+  }
+
+  .login-wrapper .login-btn {
+    padding: 13px 20px;
+    background-color: #fe8f07;
+    border-radius: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 14px;
+    width: 100%;
+  }
+
+  .login-wrapper .login-btn:hover {
+    border: 1px solid #fe8f07;
+    background-color: #212121;
+    color: #fe8f07;
+  }
+
+  .login-title {
+    font-size: 30px;
+    color: #fff;
+    margin-bottom: 25px;
+  }
+
+  .modal-text {
+    color: #fff;
   }
 
   .modal-content {
@@ -65,7 +131,7 @@ export default {
     margin: auto;
     width: 100%;
     max-width: 400px;
-    background: #2c3e50;
+    background: #212121;
     padding: 40px;
     border-radius: 5px;
     box-shadow: 0 0 5px 0 rgba(#333, 0.5);
@@ -78,14 +144,11 @@ export default {
       padding: 5px;
       cursor: pointer;
       transition: 0.15s;
+      color: #fff;
 
       &:hover {
-        color: #000;
+        color: #fe8f07;
       }
-    }
-
-    h3 {
-      margin: 0;
     }
 
     p {
@@ -94,15 +157,7 @@ export default {
 
     .error {
       color: tomato;
-      font-size: 12px;
-    }
-
-    .button {
-      width: 100%;
-      height: 75px;
-      font-size: 100%;
-      margin-top: 20px;
-      background-color: #42b983;
+      font-size: 1rem;
     }
   }
 }

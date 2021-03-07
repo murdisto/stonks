@@ -1,4 +1,5 @@
 <template>
+  <nav-bar />
   <div>
     <h1>Dashboard</h1>
     <h2>hello, {{ userProfile.name }}</h2>
@@ -11,10 +12,14 @@
 
 <script>
 import { mapState } from "vuex";
+import NavBar from "../components/NavBar.vue";
 
 export default {
   computed: {
     ...mapState(["userProfile"]),
+  },
+  components: {
+    NavBar,
   },
 };
 // console.log(this.userProfile);
