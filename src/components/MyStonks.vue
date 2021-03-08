@@ -109,6 +109,28 @@ export default {
   border-radius: 0px;
   margin-bottom: 10px;
   padding: 10px;
+  animation: fadeIn 0.5s linear;
+  animation-fill-mode: both;
+}
+@for $i from 1 through 50 {
+  .stonks-container-item:nth-child(#{$i}) {
+    animation-delay: 0.25s * $i;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    top: 100px;
+  }
+
+  75% {
+    opacity: 0.5;
+    top: 0px;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 .stonk-name {
