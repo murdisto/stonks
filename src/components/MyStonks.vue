@@ -1,23 +1,35 @@
 <template>
   <div>
-    <h1>MYSTONKS</h1>
-
-    <div>
+    <div class="stonks-container list-group">
       <div
         v-for="(stonk, index) in stonks"
         :key="index"
         @click="toggleInfo(index, stonk.symbol)"
+        class="stonks-container-item list-group-item"
       >
-        {{ stonk.name }}
-        <button
-          v-if="compareStonks(stonk.symbol)"
-          @click="followStonk(stonk.symbol)"
+        <div
+          class="d-flex flex-row justify-content-between stonks-container-item-container"
         >
-          +follow
-        </button>
-        <button v-else @click="unfollowStonk(stonk.symbol, index)">
-          -unfollow
-        </button>
+          <div class="d-flex align-items-center stonk-name">
+            <div class="stonk-name-text">{{ stonk.name }}</div>
+          </div>
+          <div class="">
+            <button
+              v-if="compareStonks(stonk.symbol)"
+              @click.stop="followStonk(stonk.symbol)"
+            >
+              +follow
+            </button>
+            <button
+              v-else
+              @click.stop="unfollowStonk(stonk.symbol, index)"
+              class="btn btn-block follow-btn"
+            >
+              -unfollow
+            </button>
+          </div>
+        </div>
+
         <div v-if="show.includes(index)">
           I am not a cat {{ stonk.price }}
           <!-- <chart :symbol="symbol" /> -->
@@ -86,4 +98,60 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.stonks-container {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.stonks-container-item {
+  border: 3px solid #15a1ec;
+  background-color: #084464;
+  border-radius: 0px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.stonk-name {
+  min-width: 0 !important;
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.stonk-name-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1.5rem;
+  font-family: Oswald;
+}
+
+.stonks-container-item-container {
+  min-width: 0 !important;
+}
+
+.follow-btn {
+  padding: 2px 5px;
+  background-color: #15a1ec;
+  border-radius: 75px;
+  border: 2px solid #15a1ec;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0px;
+  width: 100%;
+  height: 100%;
+  min-width: 0 !important;
+}
+@media (min-width: 576px) {
+  .follow-btn {
+    padding: 5px 10px;
+    font-size: 1rem;
+  }
+}
+
+.follow-btn:hover {
+  border: 2px solid #15a1ec;
+  background-color: #fff;
+  color: #15a1ec;
+}
 </style>
