@@ -13,10 +13,34 @@
           <div class="d-flex align-items-center stonk-name">
             <div class="stonk-name-text">{{ stonk.name }}</div>
           </div>
-          <div class="">
+          <div class="stonk-price-text my-auto">
+            <div class="stonk-price-text-item">
+              ${{ stonk.price.toFixed(2) }}
+            </div>
+            <div
+              class="stonk-price-text-item"
+              :class="{
+                positive: stonk.change > 0,
+                negative: stonk.change < 0,
+              }"
+            >
+              {{ stonk.change.toFixed(2) }}
+            </div>
+            <div
+              class="stonk-price-text-item"
+              :class="{
+                positive: stonk.change > 0,
+                negative: stonk.change < 0,
+              }"
+            >
+              ({{ stonk.changesPercentage }}%)
+            </div>
+          </div>
+          <div class="my-auto">
             <button
               v-if="compareStonks(stonk.symbol)"
               @click.stop="followStonk(stonk.symbol)"
+              class="btn btn-block follow-btn"
             >
               +follow
             </button>
@@ -135,16 +159,38 @@ export default {
 
 .stonk-name {
   min-width: 0 !important;
+  max-width: 33%;
   flex: 1;
   margin-right: 1rem;
 }
 
 .stonk-name-text {
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: break-spaces;
   overflow: hidden;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-family: Oswald;
+}
+@media (min-width: 576px) {
+  .stonk-name-text {
+    font-size: 1.5rem;
+  }
+}
+
+.stonk-price-text {
+  font-size: 1rem;
+  font-family: Oswald;
+}
+@media (min-width: 576px) {
+  .stonk-price-text {
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.stonk-price-text-item {
+  margin-right: 0.5rem;
 }
 
 .stonks-container-item-container {
@@ -152,7 +198,7 @@ export default {
 }
 
 .follow-btn {
-  padding: 2px 5px;
+  padding: 5px 7px;
   background-color: #15a1ec;
   border-radius: 75px;
   border: 2px solid #15a1ec;
@@ -163,11 +209,14 @@ export default {
   width: 100%;
   height: 100%;
   min-width: 0 !important;
+  max-height: 30px;
 }
 @media (min-width: 576px) {
   .follow-btn {
     padding: 5px 10px;
     font-size: 1rem;
+    height: 100%;
+    max-height: 100px;
   }
 }
 
@@ -175,5 +224,13 @@ export default {
   border: 2px solid #15a1ec;
   background-color: #fff;
   color: #15a1ec;
+}
+
+.positive {
+  color: rgb(37, 234, 37);
+}
+
+.negative {
+  color: rgb(255, 0, 0);
 }
 </style>
