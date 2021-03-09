@@ -1,19 +1,110 @@
 <template>
   <div>
     <div>
-      <form @submit.prevent="searchStonks">
-        <input type="text" v-model="searchTerm" placeholder="Search..." />
-        <input type="submit" value="Go" :disabled="searchTerm === ''" />
+      <form @submit.prevent="searchStonks" class="search-bar">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            v-model="searchTerm"
+            class="form-control search-input"
+            placeholder="Search..."
+            aria-label="Recipient's username"
+            aria-describedby="basic-addon2"
+          />
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary search-btn" type="button">
+              Button
+            </button>
+          </div>
+        </div>
       </form>
       <div class="stonks-container list-group">
         <div
-          v-for="(result, index) in results"
+          v-for="(stonk, index) in results"
           :key="index"
           @click="toggleInfo(index)"
           class="stonks-container-item list-group-item"
         >
-          {{ result.name }}
-          {{ result.change }}
+          <div
+            class="d-flex flex-row justify-content-between stonks-container-item-container"
+          >
+            <div class="d-flex align-items-center stonk-name">
+              <div class="stonk-name-text">{{ stonk.name }}</div>
+            </div>
+            <div class="stonk-price-text my-auto">
+              <div class="stonk-price-text-item">
+                ${{ stonk.price.toFixed(2) }}
+              </div>
+              <div
+                class="stonk-price-text-item"
+                :class="{
+                  positive: stonk.change > 0,
+                  negative: stonk.change < 0,
+                }"
+              >
+                {{ stonk.change.toFixed(2) }}
+              </div>
+              <div
+                class="stonk-price-text-item"
+                :class="{
+                  positive: stonk.change > 0,
+                  negative: stonk.change < 0,
+                }"
+              >
+                ({{ stonk.changesPercentage }}%)
+              </div>
+            </div>
+            <div class="my-auto">
+              <button
+                v-if="compareStonks(stonk.symbol)"
+                @click.stop="followStonk(stonk.symbol)"
+                class="btn btn-block follow-btn"
+              >
+                +follow
+              </button>
+              <button
+                v-else
+                @click.stop="unfollowStonk(stonk.symbol, index)"
+                class="btn btn-block follow-btn"
+              >
+                -unfollow
+              </button>
+            </div>
+          </div>
+          <div
+            v-if="show.includes(index)"
+            class="stonk-info row justify-content-around"
+          >
+            <div class="stonk-info-items col-sm-4 justify-content-between">
+              <div class="d-flex flex-row justify-content-between">
+                <div>Previous Close</div>
+                <div>{{ stonk.previousClose }}</div>
+              </div>
+              <div class="d-flex flex-row justify-content-between">
+                <div>Open</div>
+                <div>{{ stonk.open }}</div>
+              </div>
+              <div class="d-flex flex-row justify-content-between">
+                <div>Market Cap</div>
+                <div>{{ stonk.marketCap }}</div>
+              </div>
+            </div>
+            <div class="stonk-info-items col-sm-4 justify-content-between">
+              <div class="d-flex flex-row justify-content-between">
+                <div>Day's Range</div>
+                <div>{{ stonk.dayLow }} - {{ stonk.dayHigh }}</div>
+              </div>
+              <div class="d-flex flex-row justify-content-between">
+                <div>Year's Range</div>
+                <div>{{ stonk.yearLow }} - {{ stonk.yearHigh }}</div>
+              </div>
+              <div class="d-flex flex-row justify-content-between">
+                <div>Volume</div>
+                <div>{{ stonk.volume }}</div>
+              </div>
+            </div>
+            <!-- <chart :symbol="symbol" /> -->
+          </div>
         </div>
       </div>
     </div>
@@ -86,4 +177,158 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.stonks-container {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.stonks-container-item {
+  height: auto;
+  border: 3px solid #15a1ec;
+  background-color: #084464;
+  border-radius: 0px;
+  margin-bottom: 10px;
+  padding: 10px;
+  animation: fadeIn 0.5s linear;
+  animation-fill-mode: both;
+  cursor: pointer;
+}
+@for $i from 1 through 50 {
+  .stonks-container-item:nth-child(#{$i}) {
+    animation-delay: 0.25s * $i;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    top: 100px;
+  }
+
+  75% {
+    opacity: 0.5;
+    top: 0px;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.stonk-name {
+  min-width: 0 !important;
+  max-width: 33%;
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.stonk-name-text {
+  text-overflow: ellipsis;
+  white-space: break-spaces;
+  overflow: hidden;
+  font-size: 1rem;
+  font-family: Oswald;
+}
+@media (min-width: 576px) {
+  .stonk-name-text {
+    font-size: 1.5rem;
+  }
+}
+
+.stonk-price-text {
+  font-size: 1rem;
+  font-family: Oswald;
+}
+@media (min-width: 576px) {
+  .stonk-price-text {
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.stonk-price-text-item {
+  margin-right: 0.5rem;
+}
+
+.stonks-container-item-container {
+  min-width: 0 !important;
+}
+
+.follow-btn {
+  padding: 5px 7px;
+  background-color: #15a1ec;
+  border-radius: 75px;
+  border: 2px solid #15a1ec;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0px;
+  width: 100%;
+  height: 100%;
+  min-width: 0 !important;
+  max-height: 30px;
+}
+@media (min-width: 576px) {
+  .follow-btn {
+    padding: 5px 10px;
+    font-size: 1rem;
+    height: 100%;
+    max-height: 100px;
+  }
+}
+
+.follow-btn:hover {
+  border: 2px solid #15a1ec;
+  background-color: #fff;
+  color: #15a1ec;
+}
+
+.stonk-info {
+  font-family: Oswald;
+  margin-top: 15px;
+}
+
+.stonk-info-items {
+  // border: 1px solid red;
+  // margin-top: 15px;
+  animation: fadeIn 0.25s linear;
+  animation-fill-mode: none;
+}
+
+.positive {
+  color: rgb(37, 234, 37);
+}
+
+.negative {
+  color: rgb(255, 0, 0);
+}
+
+.search-btn {
+  // padding: 5px 10px;
+  background-color: #fe8f07;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  // margin-bottom: 0px;
+  // width: 100%;
+}
+
+.search-input {
+  border: 0;
+}
+
+.search-bar {
+  width: 80%;
+  margin: auto;
+}
+
+@media (min-width: 576px) {
+  .search-bar {
+    width: 50%;
+    margin: auto;
+  }
+}
 </style>

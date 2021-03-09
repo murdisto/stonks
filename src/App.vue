@@ -41,8 +41,8 @@ export default {
 }
 
 .loader {
-  border: 16px solid #42b983;
-  border-top: 16px solid #3498db;
+  border: 16px solid #fe8f07;
+  border-top: 16px solid #15a1ec;
   border-radius: 50%;
   width: 120px;
   height: 120px;
