@@ -53,9 +53,38 @@
             </button>
           </div>
         </div>
-
-        <div v-if="show.includes(index)">
-          I am not a cat {{ stonk.price }}
+        <div
+          v-if="show.includes(index)"
+          class="stonk-info row justify-content-around"
+        >
+          <div class="stonk-info-items col-sm-4 justify-content-between">
+            <div class="d-flex flex-row justify-content-between">
+              <div>Previous Close</div>
+              <div>{{ stonk.previousClose }}</div>
+            </div>
+            <div class="d-flex flex-row justify-content-between">
+              <div>Open</div>
+              <div>{{ stonk.open }}</div>
+            </div>
+            <div class="d-flex flex-row justify-content-between">
+              <div>Market Cap</div>
+              <div>{{ stonk.marketCap }}</div>
+            </div>
+          </div>
+          <div class="stonk-info-items col-sm-4 justify-content-between">
+            <div class="d-flex flex-row justify-content-between">
+              <div>Day's Range</div>
+              <div>{{ stonk.dayLow }} - {{ stonk.dayHigh }}</div>
+            </div>
+            <div class="d-flex flex-row justify-content-between">
+              <div>Year's Range</div>
+              <div>{{ stonk.yearLow }} - {{ stonk.yearHigh }}</div>
+            </div>
+            <div class="d-flex flex-row justify-content-between">
+              <div>Volume</div>
+              <div>{{ stonk.volume }}</div>
+            </div>
+          </div>
           <!-- <chart :symbol="symbol" /> -->
         </div>
       </div>
@@ -78,6 +107,7 @@ export default {
       stonks: [],
       show: [],
       symbol: null,
+      isActive: false,
     };
   },
   created() {
@@ -109,6 +139,7 @@ export default {
       return !this.userProfile.stonks.includes(symbol);
     },
     toggleInfo(index, symbol) {
+      this.isActive = !this.isActive;
       this.symbol = symbol;
       console.log(this.symbol);
       if (this.show.includes(index)) {
@@ -128,6 +159,7 @@ export default {
 }
 
 .stonks-container-item {
+  height: auto;
   border: 3px solid #15a1ec;
   background-color: #084464;
   border-radius: 0px;
@@ -135,6 +167,7 @@ export default {
   padding: 10px;
   animation: fadeIn 0.5s linear;
   animation-fill-mode: both;
+  cursor: pointer;
 }
 @for $i from 1 through 50 {
   .stonks-container-item:nth-child(#{$i}) {
@@ -224,6 +257,18 @@ export default {
   border: 2px solid #15a1ec;
   background-color: #fff;
   color: #15a1ec;
+}
+
+.stonk-info {
+  font-family: Oswald;
+  margin-top: 15px;
+}
+
+.stonk-info-items {
+  // border: 1px solid red;
+  // margin-top: 15px;
+  animation: fadeIn 0.25s linear;
+  animation-fill-mode: none;
 }
 
 .positive {
