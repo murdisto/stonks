@@ -1,7 +1,15 @@
 <template>
   <div>
     <div class="stonks-container list-group">
+      <div v-if="userProfile.stonks.length < 1" class="oops">
+        Oops, looks like you aren't following any stonks yet.
+        <router-link class="oops-link" to="/dashboard/search"
+          >Search</router-link
+        >
+        for some to follow.
+      </div>
       <div
+        v-else
         v-for="(stonk, index) in stonks"
         :key="index"
         @click="toggleInfo(index, stonk.symbol)"
@@ -116,13 +124,15 @@ export default {
     const BASE_URL = "https://financialmodelingprep.com/api/v3/";
     const apiURL = `${BASE_URL}quote/${symbolsString}?apikey=${API_KEY}`;
 
-    axios
-      .get(apiURL)
-      .then((res) => {
-        this.stonks = [...res.data];
-        console.log("stonks: ", this.stonks);
-      })
-      .catch((err) => console.error(err));
+    if (this.symbols.length > 0) {
+      axios
+        .get(apiURL)
+        .then((res) => {
+          this.stonks = [...res.data];
+          console.log("stonks: ", this.stonks);
+        })
+        .catch((err) => console.error(err));
+    }
   },
   computed: {
     ...mapState(["userProfile"]),
@@ -277,5 +287,16 @@ export default {
 
 .negative {
   color: rgb(255, 0, 0);
+}
+
+.oops {
+  font-size: 1.75rem;
+  font-family: Oswald;
+  padding: 40px;
+}
+
+.oops-link {
+  text-decoration: underline;
+  color: #15a1ec;
 }
 </style>

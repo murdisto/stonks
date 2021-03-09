@@ -5,7 +5,10 @@
       <router-link to="/dashboard/search">Search</router-link> |
       <router-link to="/dashboard/stocks">My Stocks</router-link>
     </div>
-    <router-view />
+
+    <div>
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -20,8 +23,8 @@ export default {
   components: {
     NavBar,
   },
+  // created() {},
 };
-// console.log(this.userProfile);
 </script>
 
 <style lang="scss" scoped>
