@@ -12,13 +12,25 @@
             aria-describedby="basic-addon2"
           />
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary search-btn" type="button">
-              Button
+            <button
+              @click="searchStonks"
+              class="btn btn-outline-secondary search-btn"
+              type="button"
+              :disabled="searchTerm === ''"
+            >
+              Search
             </button>
           </div>
         </div>
       </form>
-      <div class="stonks-container list-group">
+      <div v-if="loading" class="search-loader-container">
+        <div class="search-loader"></div>
+      </div>
+      <div v-if="initialResultSymbols.length < 1" class="oops">
+        Oops, we didnt find that stonk. Try shortening your search term, e.g.,
+        instead of "google" try "goog" instead.
+      </div>
+      <div v-else class="stonks-container list-group">
         <div
           v-for="(stonk, index) in results"
           :key="index"
@@ -32,9 +44,7 @@
               <div class="stonk-name-text">{{ stonk.name }}</div>
             </div>
             <div class="stonk-price-text my-auto">
-              <div class="stonk-price-text-item">
-                ${{ stonk.price.toFixed(2) }}
-              </div>
+              <div class="stonk-price-text-item">${{ stonk.price }}</div>
               <div
                 class="stonk-price-text-item"
                 :class="{
@@ -42,7 +52,7 @@
                   negative: stonk.change < 0,
                 }"
               >
-                {{ stonk.change.toFixed(2) }}
+                {{ stonk.change }}
               </div>
               <div
                 class="stonk-price-text-item"
@@ -124,7 +134,8 @@ export default {
       searchTerm: "",
       results: [],
       show: [],
-      initialResultSymbols: [],
+      initialResultSymbols: [1],
+      loading: false,
     };
   },
   created() {
@@ -135,6 +146,9 @@ export default {
   },
   methods: {
     searchStonks() {
+      this.loading = true;
+      this.initialResultSymbols = [1];
+      this.results = [];
       const searchTerm = this.searchTerm;
       const BASE_URL = "https://financialmodelingprep.com/api/v3/";
       const apiURL = `${BASE_URL}search?query=${searchTerm}&limit=50&apikey=${API_KEY}`;
@@ -142,16 +156,29 @@ export default {
       axios
         .get(apiURL)
         .then((res) => {
-          this.initialResultSymbols = res.data.map(({ symbol }) => symbol);
-          const symbolsString = this.initialResultSymbols.toString();
-          const secondaryApiURL = `${BASE_URL}quote/${symbolsString}?apikey=${API_KEY}`;
+          if (res.status === 200) {
+            this.initialResultSymbols = res.data.map(({ symbol }) => symbol);
+            const symbolsString = this.initialResultSymbols.toString();
+            const secondaryApiURL = `${BASE_URL}quote/${symbolsString}?apikey=${API_KEY}`;
+            this.loading = false;
 
-          axios
-            .get(secondaryApiURL)
-            .then((res) => {
-              this.results = [...res.data];
-            })
-            .catch((err) => console.error(err));
+            if (res.data.length > 0) {
+              this.loading = true;
+              axios
+                .get(secondaryApiURL)
+                .then((res) => {
+                  this.results = [...res.data];
+                  this.results.forEach((Obj) => {
+                    Obj.price =
+                      Math.round((Obj.price + Number.EPSILON) * 100) / 100;
+                    Obj.change =
+                      Math.round((Obj.change + Number.EPSILON) * 100) / 100;
+                  });
+                  this.loading = false;
+                })
+                .catch((err) => console.error(err));
+            }
+          }
         })
         .catch((err) => console.error(err));
     },
@@ -325,10 +352,38 @@ export default {
   margin: auto;
 }
 
+.oops {
+  padding: 50px;
+}
+
 @media (min-width: 576px) {
   .search-bar {
     width: 50%;
     margin: auto;
+  }
+}
+
+.search-loader-container {
+  height: 30vh;
+  display: grid;
+  place-items: center;
+}
+
+.search-loader {
+  border: 10px solid #fe8f07;
+  border-top: 10px solid #15a1ec;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
 </style>
