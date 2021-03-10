@@ -29,7 +29,8 @@ export default createStore({
       const { user } = await fb.auth.createUserWithEmailAndPassword(form.email, form.password);
       await fb.usersCollection.doc(user.uid).set({
         name: form.name,
-        email: form.email
+        email: form.email,
+        stonks: []
       })
       dispatch('fetchUserProfile', user)
     },
@@ -59,7 +60,7 @@ export default createStore({
     async signout({ commit }) {
       await fb.auth.signOut();
       commit('setUserProfile', {});
-      router.push('/login');
+      router.push('/');
     }
   },
   getters: {
