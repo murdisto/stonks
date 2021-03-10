@@ -18,8 +18,6 @@ export default {
     },
   },
 };
-
-// console.log(this.userProfile);
 </script>
 
 <style lang="scss">

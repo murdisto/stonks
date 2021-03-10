@@ -129,7 +129,6 @@ export default {
         .get(apiURL)
         .then((res) => {
           this.stonks = [...res.data];
-          console.log("stonks: ", this.stonks);
         })
         .catch((err) => console.error(err));
     }
@@ -151,7 +150,6 @@ export default {
     toggleInfo(index, symbol) {
       this.isActive = !this.isActive;
       this.symbol = symbol;
-      console.log(this.symbol);
       if (this.show.includes(index)) {
         this.show = this.show.filter((item) => item !== index);
         return;

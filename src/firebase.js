@@ -13,8 +13,6 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-// console.log(process.env);
-
 const db = firebase.firestore();
 const auth = firebase.auth();
 

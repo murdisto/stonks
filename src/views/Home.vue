@@ -23,17 +23,13 @@ export default {
   },
   methods: {
     getStonks() {
-      console.log("getStonks called");
       const stonks = this.stonks;
       const apiURL = `https://financialmodelingprep.com/api/v3/quote/${stonks[0]}?apikey=${API_KEY}`;
-      console.log(apiURL);
 
       axios
         .get(apiURL)
         .then((res) => {
-          console.log(res);
           this.stonkData = res.data;
-          console.log("stonkData: ", this.stonkData);
         })
         .catch((err) => console.error(err));
     },

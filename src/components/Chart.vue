@@ -14,7 +14,6 @@ export default {
   props: ["symbol"],
   created() {
     this.staticSymbol = this.symbol;
-    console.log("props: ", this.symbol);
   },
 };
 </script>

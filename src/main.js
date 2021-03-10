@@ -12,7 +12,6 @@ let app;
 // wrapping the Vue app in firebase's onAuthStateChanged method to maintain the 
 // authentication state of the app
 auth.onAuthStateChanged(user => {
-  console.log(user);
   if (!app) {
     app = createApp(App)
     .use(store)

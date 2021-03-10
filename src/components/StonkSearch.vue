@@ -138,9 +138,7 @@ export default {
       loading: false,
     };
   },
-  created() {
-    console.log("results: ", this.results);
-  },
+  created() {},
   computed: {
     ...mapState(["userProfile"]),
   },
