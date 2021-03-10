@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
+// import Home from '../views/Home.vue';
 import { auth } from '../firebase';
 
 const routes = [
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   component: Home,
+  //   meta: { requiresGuest: true }
+  // },
   {
     path: '/',
-    name: 'Home',
-    component: Home,
-    meta: { requiresGuest: true }
-  },
-  {
-    path: '/login',
     name: 'login',
     component: () => import(/* webpackChunkName: "login" */'../views/Login.vue'), // lazy load
     meta: { requiresGuest: true }
