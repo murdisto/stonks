@@ -38,6 +38,9 @@
               type="submit"
               value="Login"
             />
+            <div v-if="$store.state.errorMessage" class="alert alert-danger">
+              {{ $store.state.errorMessage }}
+            </div>
             <a
               @click="togglePasswordReset"
               class="forgot-password-link underline"
@@ -82,13 +85,14 @@
                 id="password"
               />
             </div>
-
             <input
               class="btn btn-block login-btn"
               type="submit"
               value="Signup"
             />
-
+            <div v-if="$store.state.errorMessage" class="alert alert-danger">
+              {{ $store.state.errorMessage }}
+            </div>
             <p class="login-wrapper-footer-text">
               Already signed up?
               <a @click="switchForms" class="text-reset underline">Login</a>
@@ -130,6 +134,7 @@ export default {
   },
   methods: {
     switchForms() {
+      this.$store.commit("setErrorMessage", null);
       this.showLoginForm = !this.showLoginForm;
     },
     togglePasswordReset() {
@@ -147,6 +152,11 @@ export default {
         email: this.signupForm.email,
         password: this.signupForm.password,
       });
+    },
+  },
+  computed: {
+    errorMessage() {
+      return this.$store.getters.errorMessage;
     },
   },
 };

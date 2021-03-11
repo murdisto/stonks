@@ -10,7 +10,8 @@ export default createStore({
       name: "",
       stonks: []
     },
-    loadingStatus: false
+    loadingStatus: false,
+    errorMessage: null,
   },
   mutations: {
     setUserProfile(state, val) {
@@ -18,21 +19,35 @@ export default createStore({
     },
     loadingStatus(state, newLoadingStatus) {
       state.loadingStatus = newLoadingStatus;
+    },
+    setErrorMessage(state, error) {
+      state.errorMessage = error;
+      console.log('state.errorMessage: ', state.errorMessage);
     }
   },
   actions: {
-    async login({ dispatch }, form) {
-      const { user } = await fb.auth.signInWithEmailAndPassword(form.email, form.password);
-      dispatch('fetchUserProfile', user)
+    async login({ dispatch, commit }, form) {
+      try {
+        commit('setErrorMessage', null);
+        const { user } = await fb.auth.signInWithEmailAndPassword(form.email, form.password);
+        dispatch('fetchUserProfile', user)
+      } catch (error) {
+        commit('setErrorMessage', error.message);
+        console.log(this.state.errorMessage);
+      }
     },
-    async signup({ dispatch }, form) {
-      const { user } = await fb.auth.createUserWithEmailAndPassword(form.email, form.password);
+    async signup({ dispatch, commit }, form) {
+      try {const { user } = await fb.auth.createUserWithEmailAndPassword(form.email, form.password);
       await fb.usersCollection.doc(user.uid).set({
         name: form.name,
         email: form.email,
         stonks: []
       })
-      dispatch('fetchUserProfile', user)
+        dispatch('fetchUserProfile', user)
+      } catch (error) {
+        commit('setErrorMessage', error.message);
+        console.log(this.state.errorMessage);
+      }
     },
     async addFollowedStonk({ commit }, result) { 
       const { currentUser } = firebase.auth();
@@ -66,6 +81,9 @@ export default createStore({
   getters: {
     loadingStatus(state) {
       return state.loadingStatus;
+    },
+    errorMessage(state) {
+      return state.errorMessage;
     }
   },
   modules: {}
