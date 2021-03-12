@@ -8,6 +8,9 @@
         >
         for some to follow.
       </div>
+      <div v-if="loading" class="loader-container">
+        <div class="loader"></div>
+      </div>
       <div
         v-else
         v-for="(stonk, index) in stonks"
@@ -116,9 +119,11 @@ export default {
       show: [],
       symbol: null,
       isActive: false,
+      loading: false,
     };
   },
   created() {
+    this.loading = true;
     this.symbols = this.userProfile.stonks;
     const symbolsString = this.symbols.toString();
     const BASE_URL = "https://financialmodelingprep.com/api/v3/";
@@ -129,6 +134,7 @@ export default {
         .get(apiURL)
         .then((res) => {
           this.stonks = [...res.data];
+          this.loading = false;
         })
         .catch((err) => console.error(err));
     }
@@ -296,5 +302,29 @@ export default {
 .oops-link {
   text-decoration: underline;
   color: #15a1ec;
+}
+
+.loader-container {
+  height: 30vh;
+  display: grid;
+  place-items: center;
+}
+
+.loader {
+  border: 10px solid #fe8f07;
+  border-top: 10px solid #15a1ec;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
