@@ -38,12 +38,17 @@
           class="stonks-container-item list-group-item"
         >
           <div
-            class="d-flex flex-row justify-content-between stonks-container-item-container"
+            class="
+              d-flex
+              flex-row
+              justify-content-between
+              stonks-container-item-container
+            "
           >
             <div class="d-flex align-items-center stonk-name">
-              <div class="stonk-name-text">{{ stonk.name }}</div>
+              <div class="stonk-name-text">{{ stonk["2. name"] }}</div>
             </div>
-            <div class="stonk-price-text my-auto">
+            <!-- <div class="stonk-price-text my-auto">
               <div class="stonk-price-text-item">${{ stonk.price }}</div>
               <div
                 class="stonk-price-text-item"
@@ -63,7 +68,7 @@
               >
                 ({{ stonk.changesPercentage }}%)
               </div>
-            </div>
+            </div> -->
             <div class="my-auto">
               <button
                 v-if="compareStonks(stonk.symbol)"
@@ -126,7 +131,7 @@
 import axios from "axios";
 import { mapState } from "vuex";
 
-const API_KEY = process.env.VUE_APP_FNP_API_KEY;
+const API_KEY = process.env.VUE_APP_AV_API_KEY;
 
 export default {
   data() {
@@ -148,34 +153,36 @@ export default {
       this.initialResultSymbols = [1];
       this.results = [];
       const searchTerm = this.searchTerm;
-      const BASE_URL = "https://financialmodelingprep.com/api/v3/";
-      const apiURL = `${BASE_URL}search?query=${searchTerm}&limit=50&apikey=${API_KEY}`;
+      const BASE_URL = "https://www.alphavantage.co/";
+      const apiURL = `${BASE_URL}query?function=SYMBOL_SEARCH&keywords=${searchTerm}&apikey=${API_KEY}`;
 
       axios
         .get(apiURL)
         .then((res) => {
           if (res.status === 200) {
-            this.initialResultSymbols = res.data.map(({ symbol }) => symbol);
-            const symbolsString = this.initialResultSymbols.toString();
-            const secondaryApiURL = `${BASE_URL}quote/${symbolsString}?apikey=${API_KEY}`;
+            console.log(res.data.bestMatches[0]["2. name"]);
+            this.results = [...res.data.bestMatches];
+            // this.initialResultSymbols = res.data.map(({ symbol }) => symbol);
+            // const symbolsString = this.initialResultSymbols.toString();
+            // const secondaryApiURL = `${BASE_URL}quote?symbol=${symbolsString}&token=${API_KEY}`;
             this.loading = false;
 
-            if (res.data.length > 0) {
-              this.loading = true;
-              axios
-                .get(secondaryApiURL)
-                .then((res) => {
-                  this.results = [...res.data];
-                  this.results.forEach((Obj) => {
-                    Obj.price =
-                      Math.round((Obj.price + Number.EPSILON) * 100) / 100;
-                    Obj.change =
-                      Math.round((Obj.change + Number.EPSILON) * 100) / 100;
-                  });
-                  this.loading = false;
-                })
-                .catch((err) => console.error(err));
-            }
+            // if (res.data.length > 0) {
+            //   this.loading = true;
+            //   axios
+            //     .get(secondaryApiURL)
+            //     .then((res) => {
+            //       this.results = [...res.data];
+            //       this.results.forEach((Obj) => {
+            //         Obj.price =
+            //           Math.round((Obj.price + Number.EPSILON) * 100) / 100;
+            //         Obj.change =
+            //           Math.round((Obj.change + Number.EPSILON) * 100) / 100;
+            //       });
+            //       this.loading = false;
+            //     })
+            //     .catch((err) => console.error(err));
+            // }
           }
         })
         .catch((err) => console.error(err));
