@@ -34,7 +34,7 @@
         <div
           v-for="(stonk, index) in results"
           :key="index"
-          @click="toggleInfo(index)"
+          @click="toggleInfo(stonk, index)"
           class="stonks-container-item list-group-item"
         >
           <div
@@ -71,15 +71,15 @@
             </div> -->
             <div class="my-auto">
               <button
-                v-if="compareStonks(stonk.symbol)"
-                @click.stop="followStonk(stonk.symbol)"
+                v-if="compareStonks(stonk['1. symbol'])"
+                @click.stop="followStonk(stonk['1. symbol'])"
                 class="btn btn-block follow-btn"
               >
                 +follow
               </button>
               <button
                 v-else
-                @click.stop="unfollowStonk(stonk.symbol, index)"
+                @click.stop="unfollowStonk(stonk['1. symbol'], index)"
                 class="btn btn-block follow-btn"
               >
                 -unfollow
@@ -90,32 +90,60 @@
             v-if="show.includes(index)"
             class="stonk-info row justify-content-around"
           >
-            <div class="stonk-info-items col-sm-4 justify-content-between">
-              <div class="d-flex flex-row justify-content-between">
-                <div>Previous Close</div>
-                <div>{{ stonk.previousClose }}</div>
-              </div>
-              <div class="d-flex flex-row justify-content-between">
-                <div>Open</div>
-                <div>{{ stonk.open }}</div>
-              </div>
-              <div class="d-flex flex-row justify-content-between">
-                <div>Market Cap</div>
-                <div>{{ stonk.marketCap }}</div>
-              </div>
+            <div v-if="itemLoading" class="search-loader-container-small">
+              <div class="search-loader-small"></div>
             </div>
-            <div class="stonk-info-items col-sm-4 justify-content-between">
-              <div class="d-flex flex-row justify-content-between">
-                <div>Day's Range</div>
-                <div>{{ stonk.dayLow }} - {{ stonk.dayHigh }}</div>
+            <div v-else class="row justify-content-around">
+              <div class="stonk-info-items col-sm-4 justify-content-between">
+                <div class="d-flex flex-row justify-content-between">
+                  <div>Price</div>
+                  <div
+                    class="stonk-price-text-item"
+                    :class="{
+                      positive: quote['09. change'] > 0,
+                      negative: quote['09. change'] < 0,
+                    }"
+                  >
+                    {{ parseFloat(quote["05. price"]).toFixed(2) }}
+                  </div>
+                  <!-- <div>{{ parseFloat(quote["05. price"]).toFixed(2) }}</div> -->
+                </div>
+                <div class="d-flex flex-row justify-content-between">
+                  <div>Previous Close</div>
+                  <div>
+                    {{ parseFloat(quote["08. previous close"]).toFixed(2) }}
+                  </div>
+                </div>
+                <div class="d-flex flex-row justify-content-between">
+                  <div>Open</div>
+                  <div>{{ parseFloat(quote["02. open"]).toFixed(2) }}</div>
+                </div>
               </div>
-              <div class="d-flex flex-row justify-content-between">
-                <div>Year's Range</div>
-                <div>{{ stonk.yearLow }} - {{ stonk.yearHigh }}</div>
-              </div>
-              <div class="d-flex flex-row justify-content-between">
-                <div>Volume</div>
-                <div>{{ stonk.volume }}</div>
+              <div class="stonk-info-items col-sm-4 justify-content-between">
+                <div class="d-flex flex-row justify-content-between">
+                  <div>Day Change</div>
+                  <div
+                    class="stonk-price-text-item"
+                    :class="{
+                      positive: quote['09. change'] > 0,
+                      negative: quote['09. change'] < 0,
+                    }"
+                  >
+                    {{ parseFloat(quote["09. change"]).toFixed(2) }}
+                    ({{ parseFloat(quote["10. change percent"]).toFixed(2) }}%)
+                  </div>
+                </div>
+                <div class="d-flex flex-row justify-content-between">
+                  <div>Day's Range</div>
+                  <div>
+                    {{ parseFloat(quote["04. low"]).toFixed(2) }} -
+                    {{ parseFloat(quote["03. high"]).toFixed(2) }}
+                  </div>
+                </div>
+                <div class="d-flex flex-row justify-content-between">
+                  <div>Volume</div>
+                  <div>{{ quote["06. volume"] }}</div>
+                </div>
               </div>
             </div>
             <!-- <chart :symbol="symbol" /> -->
@@ -138,9 +166,11 @@ export default {
     return {
       searchTerm: "",
       results: [],
+      quote: {},
       show: [],
       initialResultSymbols: [1],
       loading: false,
+      itemLoading: false,
     };
   },
   created() {},
@@ -154,13 +184,13 @@ export default {
       this.results = [];
       const searchTerm = this.searchTerm;
       const BASE_URL = "https://www.alphavantage.co/";
-      const apiURL = `${BASE_URL}query?function=SYMBOL_SEARCH&keywords=${searchTerm}&apikey=${API_KEY}`;
+      const apiURL = `${BASE_URL}query?function=SYMBOL_SEARCH&keywords=${searchTerm}&apikey=${API_KEY}`; // Search Endpoint on AlphaVantage
 
       axios
         .get(apiURL)
         .then((res) => {
           if (res.status === 200) {
-            console.log(res.data.bestMatches[0]["2. name"]);
+            // console.log(res.data.bestMatches);
             this.results = [...res.data.bestMatches];
             // this.initialResultSymbols = res.data.map(({ symbol }) => symbol);
             // const symbolsString = this.initialResultSymbols.toString();
@@ -197,9 +227,32 @@ export default {
     compareStonks(symbol) {
       return !this.userProfile.stonks.includes(symbol);
     },
-    toggleInfo(index) {
-      if (this.show.includes(index)) {
-        this.show = this.show.filter((item) => item !== index);
+    toggleInfo(stonk, index) {
+      this.itemLoading = true;
+      // console.log(stonk["1. symbol"], index);
+      const symbol = stonk["1. symbol"];
+      const BASE_URL = "https://www.alphavantage.co/";
+      const apiURL = `${BASE_URL}query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`; // Quote Endpoint on AlphaVantage
+
+      // if (this.show.length === 0) {
+      axios
+        .get(apiURL)
+        .then((res) => {
+          // console.log(res.status);
+          if (res.status === 200) {
+            // console.log(res.data["Global Quote"]);
+            this.quote = res.data["Global Quote"];
+            // console.log("hello", this.quote);
+            this.itemLoading = false;
+          }
+        })
+        .catch((err) => console.error(err));
+      // }
+
+      if (this.show.length > 0) {
+        // this.show = this.show.filter((item) => item !== index);
+        this.show = [];
+        this.show.push(index);
         return;
       }
       this.show.push(index);
@@ -248,7 +301,7 @@ export default {
 
 .stonk-name {
   min-width: 0 !important;
-  max-width: 33%;
+  max-width: 50%;
   flex: 1;
   margin-right: 1rem;
 }
@@ -278,9 +331,9 @@ export default {
   }
 }
 
-.stonk-price-text-item {
-  margin-right: 0.5rem;
-}
+// .stonk-price-text-item {
+//   margin-right: 0.5rem;
+// }
 
 .stonks-container-item-container {
   min-width: 0 !important;
@@ -380,6 +433,21 @@ export default {
   border-radius: 50%;
   width: 50px;
   height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+.search-loader-container-small {
+  height: 10vh;
+  display: grid;
+  place-items: center;
+}
+
+.search-loader-small {
+  border: 5px solid #fe8f07;
+  border-top: 5px solid #15a1ec;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
