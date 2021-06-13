@@ -46,7 +46,9 @@
             "
           >
             <div class="d-flex align-items-center stonk-name">
-              <div class="stonk-name-text">{{ stonk["2. name"] }}</div>
+              <div class="stonk-name-text">
+                {{ stonk["2. name"] }} ({{ stonk["1. symbol"] }})
+              </div>
             </div>
             <!-- <div class="stonk-price-text my-auto">
               <div class="stonk-price-text-item">${{ stonk.price }}</div>

@@ -13,18 +13,23 @@
       </div>
       <div
         v-else
-        v-for="(stonk, index) in stonks"
+        v-for="(stonk, index) in symbols"
         :key="index"
-        @click="toggleInfo(index, stonk.symbol)"
+        @click="toggleInfo(index, stonk)"
         class="stonks-container-item list-group-item"
       >
         <div
-          class="d-flex flex-row justify-content-between stonks-container-item-container"
+          class="
+            d-flex
+            flex-row
+            justify-content-between
+            stonks-container-item-container
+          "
         >
           <div class="d-flex align-items-center stonk-name">
-            <div class="stonk-name-text">{{ stonk.name }}</div>
+            <div class="stonk-name-text">{{ stonk }}</div>
           </div>
-          <div class="stonk-price-text my-auto">
+          <!-- <div class="stonk-price-text my-auto">
             <div class="stonk-price-text-item">
               ${{ stonk.price.toFixed(2) }}
             </div>
@@ -46,18 +51,18 @@
             >
               ({{ stonk.changesPercentage }}%)
             </div>
-          </div>
+          </div> -->
           <div class="my-auto">
             <button
-              v-if="compareStonks(stonk.symbol)"
-              @click.stop="followStonk(stonk.symbol)"
+              v-if="compareStonks(stonk)"
+              @click.stop="followStonk(stonk)"
               class="btn btn-block follow-btn"
             >
               +follow
             </button>
             <button
               v-else
-              @click.stop="unfollowStonk(stonk.symbol, index)"
+              @click.stop="unfollowStonk(stonk, index)"
               class="btn btn-block follow-btn"
             >
               -unfollow
@@ -68,32 +73,60 @@
           v-if="show.includes(index)"
           class="stonk-info row justify-content-around"
         >
-          <div class="stonk-info-items col-sm-4 justify-content-between">
-            <div class="d-flex flex-row justify-content-between">
-              <div>Previous Close</div>
-              <div>{{ stonk.previousClose }}</div>
-            </div>
-            <div class="d-flex flex-row justify-content-between">
-              <div>Open</div>
-              <div>{{ stonk.open }}</div>
-            </div>
-            <div class="d-flex flex-row justify-content-between">
-              <div>Market Cap</div>
-              <div>{{ stonk.marketCap }}</div>
-            </div>
+          <div v-if="itemLoading" class="loader-container-small">
+            <div class="loader-small"></div>
           </div>
-          <div class="stonk-info-items col-sm-4 justify-content-between">
-            <div class="d-flex flex-row justify-content-between">
-              <div>Day's Range</div>
-              <div>{{ stonk.dayLow }} - {{ stonk.dayHigh }}</div>
+          <div v-else class="row justify-content-around">
+            <div class="stonk-info-items col-sm-4 justify-content-between">
+              <div class="d-flex flex-row justify-content-between">
+                <div>Price</div>
+                <div
+                  class="stonk-price-text-item"
+                  :class="{
+                    positive: quote['09. change'] > 0,
+                    negative: quote['09. change'] < 0,
+                  }"
+                >
+                  {{ parseFloat(quote["05. price"]).toFixed(2) }}
+                </div>
+                <!-- <div>{{ parseFloat(quote["05. price"]).toFixed(2) }}</div> -->
+              </div>
+              <div class="d-flex flex-row justify-content-between">
+                <div>Previous Close</div>
+                <div>
+                  {{ parseFloat(quote["08. previous close"]).toFixed(2) }}
+                </div>
+              </div>
+              <div class="d-flex flex-row justify-content-between">
+                <div>Open</div>
+                <div>{{ parseFloat(quote["02. open"]).toFixed(2) }}</div>
+              </div>
             </div>
-            <div class="d-flex flex-row justify-content-between">
-              <div>Year's Range</div>
-              <div>{{ stonk.yearLow }} - {{ stonk.yearHigh }}</div>
-            </div>
-            <div class="d-flex flex-row justify-content-between">
-              <div>Volume</div>
-              <div>{{ stonk.volume }}</div>
+            <div class="stonk-info-items col-sm-4 justify-content-between">
+              <div class="d-flex flex-row justify-content-between">
+                <div>Day Change</div>
+                <div
+                  class="stonk-price-text-item"
+                  :class="{
+                    positive: quote['09. change'] > 0,
+                    negative: quote['09. change'] < 0,
+                  }"
+                >
+                  {{ parseFloat(quote["09. change"]).toFixed(2) }}
+                  ({{ parseFloat(quote["10. change percent"]).toFixed(2) }}%)
+                </div>
+              </div>
+              <div class="d-flex flex-row justify-content-between">
+                <div>Day's Range</div>
+                <div>
+                  {{ parseFloat(quote["04. low"]).toFixed(2) }} -
+                  {{ parseFloat(quote["03. high"]).toFixed(2) }}
+                </div>
+              </div>
+              <div class="d-flex flex-row justify-content-between">
+                <div>Volume</div>
+                <div>{{ quote["06. volume"] }}</div>
+              </div>
             </div>
           </div>
           <!-- <chart :symbol="symbol" /> -->
@@ -116,28 +149,34 @@ export default {
     return {
       symbols: [],
       stonks: [],
+      quote: {},
       show: [],
       symbol: null,
       isActive: false,
       loading: false,
+      itemLoading: false,
     };
   },
   created() {
     this.loading = true;
     this.symbols = this.userProfile.stonks;
     const symbolsString = this.symbols.toString();
-    const BASE_URL = "https://financialmodelingprep.com/api/v3/";
-    const apiURL = `${BASE_URL}quote/${symbolsString}?apikey=${API_KEY}`;
+    // const BASE_URL = "https://www.alphavantage.co/";
+    // const apiURL = `${BASE_URL}query?function=GLOBAL_QUOTES&symbol=${symbolsString}&apikey=${API_KEY}`;
 
-    if (this.symbols.length > 0) {
-      axios
-        .get(apiURL)
-        .then((res) => {
-          this.stonks = [...res.data];
-          this.loading = false;
-        })
-        .catch((err) => console.error(err));
-    }
+    // console.log("symbols: ", this.symbols);
+
+    // if (this.symbols.length > 0) {
+    //     axios
+    //       .get(apiURL)
+    //       .then((res) => {
+    //         this.stonks.push(res.data);
+    //         console.log(this.stonks[0]);
+    //       })
+    //       .catch((err) => console.error(err));
+    //   this.loading = false;
+    // }
+    this.loading = false;
   },
   computed: {
     ...mapState(["userProfile"]),
@@ -148,16 +187,35 @@ export default {
     },
     unfollowStonk(symbol, index) {
       this.$store.dispatch("removeFollowedStonk", symbol);
-      this.stonks.splice(index, 1);
+      this.symbols.splice(index, 1);
     },
     compareStonks(symbol) {
       return !this.userProfile.stonks.includes(symbol);
     },
     toggleInfo(index, symbol) {
-      this.isActive = !this.isActive;
+      this.isActive = !this.isActive; // I'm not sure what this is doing
+      this.itemLoading = true;
       this.symbol = symbol;
-      if (this.show.includes(index)) {
-        this.show = this.show.filter((item) => item !== index);
+      const BASE_URL = "https://www.alphavantage.co/";
+      const apiURL = `${BASE_URL}query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`;
+
+      axios
+        .get(apiURL)
+        .then((res) => {
+          // console.log(res.status);
+          if (res.status === 200) {
+            // console.log(res.data["Global Quote"]);
+            this.quote = res.data["Global Quote"];
+            // console.log("hello", this.quote);
+            this.itemLoading = false;
+          }
+        })
+        .catch((err) => console.error(err));
+
+      if (this.show.length > 0) {
+        // this.show = this.show.filter((item) => item !== index);
+        this.show = [];
+        this.show.push(index);
         return;
       }
       this.show.push(index);
@@ -236,9 +294,9 @@ export default {
   }
 }
 
-.stonk-price-text-item {
-  margin-right: 0.5rem;
-}
+// .stonk-price-text-item {
+//   margin-right: 0.5rem;
+// }
 
 .stonks-container-item-container {
   min-width: 0 !important;
@@ -316,6 +374,21 @@ export default {
   border-radius: 50%;
   width: 50px;
   height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+.loader-container-small {
+  height: 10vh;
+  display: grid;
+  place-items: center;
+}
+
+.loader-small {
+  border: 5px solid #fe8f07;
+  border-top: 5px solid #15a1ec;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
