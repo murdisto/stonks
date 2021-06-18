@@ -141,7 +141,7 @@ import axios from "axios";
 import { mapState } from "vuex";
 // import Chart from "./Chart.vue";
 
-const API_KEY = process.env.VUE_APP_FNP_API_KEY;
+const API_KEY = process.env.VUE_APP_AV_API_KEY;
 
 export default {
   // components: { Chart },
@@ -160,7 +160,7 @@ export default {
   created() {
     this.loading = true;
     this.symbols = this.userProfile.stonks;
-    const symbolsString = this.symbols.toString();
+    // const symbolsString = this.symbols.toString();
     // const BASE_URL = "https://www.alphavantage.co/";
     // const apiURL = `${BASE_URL}query?function=GLOBAL_QUOTES&symbol=${symbolsString}&apikey=${API_KEY}`;
 
@@ -193,7 +193,7 @@ export default {
       return !this.userProfile.stonks.includes(symbol);
     },
     toggleInfo(index, symbol) {
-      this.isActive = !this.isActive; // I'm not sure what this is doing
+      // this.isActive = !this.isActive;
       this.itemLoading = true;
       this.symbol = symbol;
       const BASE_URL = "https://www.alphavantage.co/";

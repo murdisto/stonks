@@ -26,7 +26,7 @@
       <div v-if="loading" class="search-loader-container">
         <div class="search-loader"></div>
       </div>
-      <div v-if="initialResultSymbols.length < 1" class="oops">
+      <div v-if="initialResults.length < 1" class="oops">
         Oops, we didnt find that stonk. Try shortening your search term, e.g.,
         instead of "google" try "goog" instead.
       </div>
@@ -170,7 +170,7 @@ export default {
       results: [],
       quote: {},
       show: [],
-      initialResultSymbols: [1],
+      initialResults: [1],
       loading: false,
       itemLoading: false,
     };
@@ -182,7 +182,7 @@ export default {
   methods: {
     searchStonks() {
       this.loading = true;
-      this.initialResultSymbols = [1];
+      this.initialResults = [1];
       this.results = [];
       const searchTerm = this.searchTerm;
       const BASE_URL = "https://www.alphavantage.co/";
@@ -194,6 +194,7 @@ export default {
           if (res.status === 200) {
             // console.log(res.data.bestMatches);
             this.results = [...res.data.bestMatches];
+            this.initialResults = [...res.data.bestMatches]; // using this to display a no results message
             // this.initialResultSymbols = res.data.map(({ symbol }) => symbol);
             // const symbolsString = this.initialResultSymbols.toString();
             // const secondaryApiURL = `${BASE_URL}quote?symbol=${symbolsString}&token=${API_KEY}`;
@@ -236,7 +237,6 @@ export default {
       const BASE_URL = "https://www.alphavantage.co/";
       const apiURL = `${BASE_URL}query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`; // Quote Endpoint on AlphaVantage
 
-      // if (this.show.length === 0) {
       axios
         .get(apiURL)
         .then((res) => {
@@ -249,7 +249,6 @@ export default {
           }
         })
         .catch((err) => console.error(err));
-      // }
 
       if (this.show.length > 0) {
         // this.show = this.show.filter((item) => item !== index);
